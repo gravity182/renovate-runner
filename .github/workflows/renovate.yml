@@ -1,8 +1,10 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+---
 name: Renovate
 
 on:
   schedule:
-    - cron: "0 0 * * *" # hourly (pick whatever)
+    - cron: "0 * * * *" # hourly
   workflow_dispatch: # Allows manual triggering from the GitHub Actions tab
     inputs:
       dryRun:
@@ -22,37 +24,31 @@ jobs:
   renovate:
     runs-on: ubuntu-latest
     permissions:
-      # Required for cloning the repository
-      contents: write
-      # Required for creating and updating pull requests
-      pull-requests: write
-      # Required for writing commit statuses (optional, but good for CI checks)
-      statuses: write
-      # Required for reading packages (especially from GHCR)
       packages: read
 
     steps:
       - name: Checkout runner repo (for config.js)
         uses: actions/checkout@v4
 
-      - name: Create GitHub App installation token
+      - name: Generate token
         id: app-token
         uses: actions/create-github-app-token@v2
         with:
           app-id: ${{ vars.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
-          owner: gravity182
+          owner: ${{ github.repository_owner }}
 
       - name: Run Renovate
         uses: renovatebot/github-action@v44.2.0
         with:
           configurationFile: config.js
+          token: ${{ steps.app-token.outputs.token }}
         env:
           LOG_LEVEL: ${{ inputs.logLevel || 'info' }}
           RENOVATE_DRY_RUN: ${{ inputs.dryRun == true }}
           RENOVATE_AUTODISCOVER: false
-          RENOVATE_TOKEN: ${{ steps.app-token.outputs.token }}
           RENOVATE_REPOSITORIES: ${{ secrets.RENOVATE_REPOSITORIES }}
           RENOVATE_INTERNAL_CHECKS_FILTER: strict
+          RENOVATE_PLATFORM: github
+          RENOVATE_PLATFORM_COMMIT: true
           RENOVATE_GITLAB_PYPI_REGISTRY_PASSWORD: ${{ secrets.RENOVATE_GITLAB_PYPI_REGISTRY_PASSWORD }}
-
