@@ -54,3 +54,5 @@ jobs:
           RENOVATE_TOKEN: ${{ steps.app-token.outputs.token }}
           RENOVATE_REPOSITORIES: ${{ secrets.RENOVATE_REPOSITORIES }}
           RENOVATE_INTERNAL_CHECKS_FILTER: strict
+          RENOVATE_GITLAB_PYPI_REGISTRY_PASSWORD: ${{ secrets.RENOVATE_GITLAB_PYPI_REGISTRY_PASSWORD }}
+
