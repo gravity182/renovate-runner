@@ -46,8 +46,7 @@ jobs:
         env:
           LOG_LEVEL: ${{ inputs.logLevel || 'info' }}
           RENOVATE_DRY_RUN: ${{ inputs.dryRun == true }}
-          RENOVATE_AUTODISCOVER: false
-          RENOVATE_REPOSITORIES: ${{ secrets.RENOVATE_REPOSITORIES }}
+          RENOVATE_AUTODISCOVER: true
           RENOVATE_INTERNAL_CHECKS_FILTER: strict
           RENOVATE_PLATFORM: github
           RENOVATE_PLATFORM_COMMIT: true
